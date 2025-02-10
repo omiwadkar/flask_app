@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verify OTP</title>
+    <style>
+        /* General Reset and Page Style */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(330deg, #40036e, #0347e7);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Container Styles */
+        .container {
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 300px;
+        }
+
+        /* Heading Style */
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* Form Label Style */
+        label {
+            font-size: 14px;
+            color: #555;
+            display: block;
+            text-align: left;
+            margin-bottom: 8px;
+        }
+
+        /* Input Field Styles */
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        input:focus {
+            border-color: #4a90e2;
+            outline: none;
+            box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+        }
+
+        /* Button Style */
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #4a90e2;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #357abd;
+        }
+
+        /* Footer Style */
+        .footer {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Enter OTP</h1>
+        <form action="/otp" method="POST">
+            <label for="otp">OTP:</label>
+            <input type="text" id="otp" name="otp" placeholder="Enter the OTP" required>
+            <button type="submit">Verify OTP</button>
+        </form>
+        <div class="footer">Need help? Contact support.</div>
+    </div>
+</body>
+</html>

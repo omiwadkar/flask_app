@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload and Download Files from S3</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('https://freerangestock.com/sample/102753/cloud-computing-and-cloud-technology.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #ffffff;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+            color: #ff6347; /* Tomato color for main heading */
+            font-size: 3rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            text-align: center;
+            color: #87CEEB; /* SkyBlue for section titles */
+            font-size: 1.5rem;
+            margin-top: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+        }
+
+        input[type="file"] {
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            background-color: #fff;
+            color: #333;
+        }
+
+        button {
+            padding: 12px 25px;
+            background-color: #32CD32; /* Lime Green */
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            font-size: 18px;
+            border-radius: 5px;
+            margin-left: 10px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #228B22; /* Forest Green */
+            transform: scale(1.05);
+        }
+
+        #files-list {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #files-list li {
+            margin: 12px 0;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+            border-radius: 8px;
+            width: 70%;
+            text-align: left;
+            color: #fff;
+            transition: background-color 0.3s ease;
+        }
+
+        #files-list li:hover {
+            background-color: rgba(0, 0, 0, 0.8); /* Darker on hover */
+        }
+
+        #files-list button {
+            background-color: #ff4500; /* Orange Red */
+            color: #fff;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        #files-list button:hover {
+            background-color: #ff6347; /* Tomato */
+            transform: scale(1.05);
+        }
+
+        a {
+            color: #ff6347;
+            text-decoration: none;
+            padding: 12px 24px;
+            background-color: #000000;
+            border-radius: 5px;
+            font-size: 18px;
+            display: inline-block;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 20px;
+        }
+
+        a:hover {
+            background-color: #555555;
+            transform: scale(1.05);
+        }
+
+        hr {
+            border: 0;
+            border-top: 2px solid #ff6347;
+            width: 80%;
+            margin: 30px auto;
+        }
+    </style>
+    <script>
+        async function showFiles() {
+            const response = await fetch('/files');
+            const files = await response.json();
+
+            const filesList = document.getElementById('files-list');
+            filesList.innerHTML = '';
+            files.forEach(file => {
+                const li = document.createElement('li');
+                li.textContent = file;
+
+                const downloadButton = document.createElement('button');
+                downloadButton.textContent = 'Download';
+                downloadButton.onclick = async () => {
+                    const res = await fetch(`/download/${file}`);
+                    const data = await res.json();
+                    window.open(data.url, '_blank');
+                };
+
+                li.appendChild(downloadButton);
+                filesList.appendChild(li);
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Upload and Download Files from S3</h1>
+    <h1>Welcome, {{ email }}</h1>
+    <a href="/logout">Logout</a>
+    <hr>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <button type="submit">Upload</button>
+    </form>
+    
+    <h2>All Files</h2>
+    <button onclick="showFiles()">Show Files</button>
+    <ul id="files-list"></ul>
+</body>
+</html>
