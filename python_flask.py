@@ -21,7 +21,7 @@ UPLOAD_FOLDER = 'uploads'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-S3_BUCKET = 'omkar9867'
+S3_BUCKET = '' # repalce with your Bucket name 
 
 
 # --- SSM Helper Function for AWS Credentials ---
