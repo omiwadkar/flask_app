@@ -12,8 +12,8 @@ app.secret_key = 'mdls llsf ykqp flnv'  # Replace with a strong secret key
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'omwadkar17@gmail.com'  # Replace with your Gmail address
-app.config['MAIL_PASSWORD'] = 'mdls llsf ykqp flnv'      # Use the generated app password here
+app.config['MAIL_USERNAME'] = ''  # Replace with your Gmail address
+app.config['MAIL_PASSWORD'] = ''      # Use the generated app password here
 
 mail = Mail(app)
 
