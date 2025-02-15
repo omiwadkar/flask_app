@@ -6,7 +6,7 @@ import boto3
 from boto3.s3.transfer import TransferConfig
 
 app = Flask(__name__)
-app.secret_key = 'mdls llsf ykqp flnv'  # Replace with a strong secret key
+app.secret_key = ''  # Replace with a strong secret key
 
 # SMTP Configuration
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
