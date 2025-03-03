@@ -24,7 +24,7 @@ if not os.path.exists(UPLOAD_FOLDER):
 S3_BUCKET = '' # repalce with your Bucket name 
 
 
-# --- SSM Helper Function for AWS Credentials ---
+
 def get_aws_parameter(param_name):
     """
     Fetches a parameter value from AWS SSM Parameter Store.
@@ -34,12 +34,12 @@ def get_aws_parameter(param_name):
     response = ssm.get_parameter(Name=param_name, WithDecryption=True)
     return response['Parameter']['Value']
 
-# Retrieve credentials from SSM Parameter Store
+
 aws_access_key_id = get_aws_parameter('access_key')
 aws_secret_access_key = get_aws_parameter('secret_access_key')
 region_name = get_aws_parameter('region_name')
 
-# Initialize S3 client with credentials fetched from SSM
+
 s3_client = boto3.client(
     's3',
     aws_access_key_id=aws_access_key_id,
@@ -47,10 +47,10 @@ s3_client = boto3.client(
     region_name=region_name
 )
 
-# Configure multipart upload threshold: files larger than 1 GB will use multipart upload
+
 multipart_config = TransferConfig(multipart_threshold=1024 * 1024 * 1024)
 
-# Store the OTPs temporarily
+
 otp_store = {}
 
 @app.route('/')
@@ -63,14 +63,14 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        # Allow any email to login
+    
         email = request.form.get('email')
 
-        # Generate a random 6-digit OTP
+
         otp = str(random.randint(100000, 999999))
         otp_store[email] = otp
 
-        # Send the OTP via email
+      
         try:
             msg = Message('Your OTP for Login', sender=app.config['MAIL_USERNAME'], recipients=[email])
             msg.body = f'Your OTP is: {otp}'
@@ -78,7 +78,7 @@ def login():
         except Exception as e:
             return f"Error sending OTP: {e}", 500
 
-        session['pending_email'] = email  # Store the pending email in session
+        session['pending_email'] = email  
         return redirect(url_for('otp_verify'))
 
     return render_template('login.html')
@@ -91,9 +91,9 @@ def otp_verify():
         email = session.get('pending_email')
 
         if email in otp_store and otp_store[email] == entered_otp:
-            session['email'] = email  # Log the user in
-            otp_store.pop(email)  # Remove OTP after verification
-            session.pop('pending_email', None)  # Clear pending email
+            session['email'] = email  
+            otp_store.pop(email) 
+            session.pop('pending_email', None)  
             return redirect(url_for('home'))
         
         return "Invalid OTP. Try again.", 401
@@ -123,12 +123,12 @@ def upload_file():
         file.save(file_path)
 
         try:
-            # Use the logged-in user's email as the folder name.
+            
             user_folder = session['email']
-            # Construct the S3 key as "user_folder/filename"
+        
             s3_key = f"{user_folder}/{file.filename}"
             
-            # Use multipart upload configuration if file is greater than 500 MB
+           
             s3_client.upload_file(file_path, S3_BUCKET, s3_key, Config=multipart_config)
             return f"File '{file.filename}' has been uploaded to folder '{user_folder}' in bucket '{S3_BUCKET}'"
         except Exception as e:
@@ -144,9 +144,9 @@ def list_files():
 
     try:
         user_folder = session['email']
-        # List objects with the user's folder prefix
+    
         response = s3_client.list_objects_v2(Bucket=S3_BUCKET, Prefix=f"{user_folder}/")
-        # Extract only the filename (after the slash)
+     
         files = [obj['Key'].split('/', 1)[-1] for obj in response.get('Contents', []) if obj['Key'] != f"{user_folder}/"]
         return jsonify(files)
     except Exception as e:
@@ -160,11 +160,10 @@ def download_file(filename):
         return redirect(url_for('login'))
 
     try:
-        # Generate a presigned URL for file download
         presigned_url = s3_client.generate_presigned_url(
             'get_object',
             Params={'Bucket': S3_BUCKET, 'Key': filename},
-            ExpiresIn=3600  # Link expires in 1 hour
+            ExpiresIn=3600  
         )
         return jsonify({'url': presigned_url})
     except Exception as e:
@@ -172,9 +171,4 @@ def download_file(filename):
 
 
 if __name__ == '__main__':
-    # Uncomment the following lines if you want to run the quiz application in the terminal
-    # quiz.loadQuestions()
-    # quiz.startQuiz()
-
-    # Run Flask web server
     app.run(host="0.0.0.0", port=5000, debug=True)
